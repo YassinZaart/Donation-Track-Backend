@@ -2,8 +2,8 @@ from typing import Optional, List
 
 from sqlalchemy import DateTime
 
-from donation_track_backend.variables import db, bcrypt
-from donation_track_backend import states, models
+from variables import db, bcrypt
+import states, models
 
 
 def login(email: str, password: str) -> states.LoginState:

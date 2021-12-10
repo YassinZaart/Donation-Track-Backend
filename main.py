@@ -1,4 +1,4 @@
-from donation_track_backend.variables import app
+from variables import app
 import api
 
 if __name__ == "__main__":
