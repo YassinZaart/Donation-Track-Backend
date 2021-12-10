@@ -1,1 +1,1 @@
-python-3.7.6git
+python-3.7.6
