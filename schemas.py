@@ -2,7 +2,7 @@ from marshmallow import Schema, fields
 
 
 class UserEmailSchema(Schema):
-    email = fields.Str(required=True, error_messages={"required": "Phone number is required"})
+    email = fields.Str(required=True, error_messages={"required": "Email is required"})
 
 
 class LoginSchema(UserEmailSchema):
@@ -39,6 +39,16 @@ class DoneeSchema(DoneeIDSchema):
 class DonationSchema(Schema):
     donee_id = fields.Int(required=True, error_messages={"required": "ID is required"})
     user_name = fields.Str(required=True, error_messages={"required": "User name is required"})
-    date = fields.DateTime(required=True, error_messages={"required": "Date is required"})
     type = fields.Str(required=True, error_messages={"required": "Type is required"})
     value = fields.Int(required=True, error_messages={"required": "Value is required"})
+
+
+class PostCharityNameSchema(Schema):
+    charity_name = fields.Str(required=True, error_messages={"required": "Charity name is required"})
+
+
+class PostSchema(PostCharityNameSchema):
+    name = fields.Str(required=True, error_messages={"required": "Name is required"})
+    address = fields.Str(required=True, error_messages={"required": "Address is required"})
+    phone_number = fields.Str(required=True, error_messages={"required": "Phone number is required"})
+    description = fields.Str(required=True, error_messages={"required": "Description is required"})

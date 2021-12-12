@@ -25,3 +25,11 @@ donation_resource_fields = {
     'type': fields.String,
     'value': fields.Integer
 }
+
+post_resource_fields = {
+    'name': fields.String,
+    'address': fields.String,
+    'phoneNumber': fields.String,
+    'description': fields.String,
+    'time_created': fields.DateTime
+}

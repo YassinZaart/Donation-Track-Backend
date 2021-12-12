@@ -78,3 +78,14 @@ def insert_donation(donee_id: str, user_name: str, date_time: DateTime, type: st
     db.session.add(donation)
     db.session.commit()
     return states.DonationInsertionState.INSERTION_SUCCESSFUL
+
+
+def insert_post(charity_name: str, name: str, location: str, phone_number: str, description: str):
+    post = models.PostModel(charity_name, name, location, phone_number, description)
+    db.session.add(post)
+    db.session.commit()
+
+
+def get_posts(charity_name: str):
+    donations = models.PostModel.query.filter_by(charity_name=charity_name).all()
+    return donations

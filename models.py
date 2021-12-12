@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-
+from sqlalchemy.sql import func
 from variables import db
 
 
@@ -28,6 +28,16 @@ class DonationModel(db.Model):
     __tablename__ = 'donations'
     user_name = db.Column(db.String(30), ForeignKey('users.name'), primary_key=True)
     donee_id = db.Column(db.String(20), ForeignKey('donees.id'), primary_key=True)
-    date = db.Column(db.DateTime, primary_key=True)
+    date = db.Column(db.DateTime, default=func.now(), primary_key=True)
     type = db.Column(db.String(30), nullable=False)
     value = db.Column(db.Integer, nullable=False)
+
+
+class PostModel(db.Model):
+    __tablename__ = 'posts'
+    charity_name = db.Column(db.String(30), nullable=False, primary_key=True)
+    user_name = db.Column(db.String(30), nullable=False)
+    address = db.Column(db.String(30), nullable=False)
+    phoneNumber = db.Column(db.String(30), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
+    time_created = db.Column(db.DateTime, default=func.now(), primary_key=True)
