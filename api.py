@@ -26,7 +26,7 @@ class SignUp(Resource):
         try:
             schemas.SignUpInfoSchema().load(args)
         except ValidationError as err:
-            abort(message=err.messages, http_status_code=409)
+            abort(message=err.messages, http_status_code=400)
         state = db_operations.signup(args["email"], args["name"],
                                      args["password"], args["city"],
                                      args["street"], args["phone_number"])
@@ -43,7 +43,7 @@ class Login(Resource):
         try:
             schemas.LoginSchema().load(args)
         except ValidationError as err:
-            abort(message=err.messages, http_status_code=409)
+            abort(message=err.messages, http_status_code=400)
 
         state = db_operations.login(args["email"], args["password"])
         if state == states.LoginState.INCORRECT_PASSWORD:
@@ -52,7 +52,8 @@ class Login(Resource):
         if state == states.LoginState.USER_NOT_FOUND:
             message = {'message': 'User does not exist'}
             return message, 404
-        return 200
+        message = {'message': 'Success!'}
+        return message, 200
 
 
 class Donee(Resource):
@@ -67,7 +68,8 @@ class Donee(Resource):
         if state == states.DoneeInsertionState.DONEE_EXISTS:
             message = {'message': 'Donee already exist'}
             return message, 409
-        return 200
+        message = {'message': 'Success!'}
+        return message, 200
 
     @marshal_with(resource_fields.donee_resource_fields)
     def get(self):
@@ -75,7 +77,7 @@ class Donee(Resource):
         try:
             schemas.DoneeIDSchema().load(args)
         except ValidationError as err:
-            abort(message=err.messages, http_status_code=409)
+            abort(message=err.messages, http_status_code=400)
         donee = db_operations.get_donee(args["id"])
         if donee is None:
             abort(message="Invalid ID", http_status_code=404)
@@ -88,7 +90,7 @@ class Donation(Resource):
         try:
             schemas.DonationSchema().load(args)
         except ValidationError as err:
-            abort(message=err.messages, http_status_code=409)
+            abort(message=err.messages, http_status_code=400)
         state = db_operations.insert_donation(args["donee_id"], args["user_name"],
                                               args["date"], args["type"],
                                               args["value"])
@@ -98,7 +100,8 @@ class Donation(Resource):
         if state == states.DonationInsertionState.DONEE_DOESNT_EXIST:
             message = {'message': 'Invalid Donee'}
             return message, 404
-        return 200
+        message = {'message': 'Success!'}
+        return message, 200
 
     @marshal_with(resource_fields.donation_resource_fields)
     def get(self):
@@ -106,13 +109,13 @@ class Donation(Resource):
         if "donee_id" in args:
             donations = db_operations.get_donations_by_donee(args["donee_id"])
             if donations is None:
-                abort(message="Donation not found", http_status_code=409)
+                abort(message="Donation not found", http_status_code=404)
             return donations
 
         if "user_name" in args:
             donations = db_operations.get_donations_by_user(args["user_name"])
             if donations is None:
-                abort(message="Donation not found", http_status_code=409)
+                abort(message="Donation not found", http_status_code=404)
             return donations
         if "user_name" in args & "donee_id" in args:
             abort(message="donee_id and user_name can't be in the same request", http_status_code=409)
@@ -125,11 +128,12 @@ class Post(Resource):
         try:
             schemas.PostSchema().load(args)
         except ValidationError as err:
-            abort(message=err.messages, http_status_code=409)
+            abort(message=err.messages, http_status_code=400)
         db_operations.insert_donation(args["charity_name"], args["name"],
                                       args["address"], args["phone_number"],
                                       args["description"])
-        return 200
+        message = {'message': 'Success!'}
+        return message, 200
 
     @marshal_with(resource_fields.post_resource_fields)
     def get(self):
@@ -137,9 +141,8 @@ class Post(Resource):
         try:
             schemas.PostCharityNameSchema().load(args)
         except ValidationError as err:
-            abort(message=err.messages, http_status_code=409)
+            abort(message=err.messages, http_status_code=400)
         posts = db_operations.get_posts(args["charity_name"])
-        print(posts)
         return posts
 
 
