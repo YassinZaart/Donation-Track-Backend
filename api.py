@@ -33,8 +33,8 @@ class SignUp(Resource):
         if state == states.SignupState.EMAIL_ALREADY_EXIST:
             message = {'message': 'User already exist'}
             return message, 409
-
-        return 200
+        message = {'message': 'Success!'}
+        return message, 200
 
 
 class Login(Resource):
