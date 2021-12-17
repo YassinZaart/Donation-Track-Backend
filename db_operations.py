@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from sqlalchemy import DateTime
+from sqlalchemy import DateTime, func
 
 from variables import db, bcrypt
 import states, models
@@ -65,15 +65,12 @@ def get_donations_by_donee(id: str) -> List[models.DoneeModel]:
     return donations
 
 
-def insert_donation(donee_id: str, user_name: str, date_time: DateTime, type: str,
+def insert_donation(donee_id: str, user_name: str, type: str,
                     value: str) -> states.DonationInsertionState:
-    donation = models.DonationModel.query.filter_by(donee_id=donee_id).first()
-    if donation is None:
-        return states.DonationInsertionState.DONEE_DOESNT_EXIST
     donation = models.DonationModel.query.filter_by(user_name=user_name).first()
     if donation is None:
         return states.DonationInsertionState.USER_DOESNT_EXIST
-    donation = models.DonationModel(donee_id=donee_id, user_name=user_name, date=date_time,
+    donation = models.DonationModel(donee_id=donee_id, user_name=user_name, date=func.now(),
                                     type=type, value=value)
     db.session.add(donation)
     db.session.commit()
@@ -81,11 +78,12 @@ def insert_donation(donee_id: str, user_name: str, date_time: DateTime, type: st
 
 
 def insert_post(charity_name: str, name: str, location: str, phone_number: str, description: str):
-    post = models.PostModel(charity_name, name, location, phone_number, description)
+    post = models.PostModel(charity_name=charity_name, user_name=name,
+                            address=location, phoneNumber=phone_number, description=description)
     db.session.add(post)
     db.session.commit()
 
 
 def get_posts(charity_name: str):
-    donations = models.PostModel.query.filter_by(charity_name=charity_name).all()
-    return donations
+    posts = models.PostModel.query.filter_by(charity_name=charity_name).all()
+    return posts

@@ -33,8 +33,8 @@ class SignUp(Resource):
         if state == states.SignupState.EMAIL_ALREADY_EXIST:
             message = {'message': 'User already exist'}
             return message, 409
-        message = {'message': 'Success!'}
-        return message, 200
+
+
 
 
 class Login(Resource):
@@ -92,7 +92,7 @@ class Donation(Resource):
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
         state = db_operations.insert_donation(args["donee_id"], args["user_name"],
-                                              args["date"], args["type"],
+                                              args["type"],
                                               args["value"])
         if state == states.DonationInsertionState.USER_DOESNT_EXIST:
             message = {'message': 'Invalid User'}
@@ -129,7 +129,7 @@ class Post(Resource):
             schemas.PostSchema().load(args)
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
-        db_operations.insert_donation(args["charity_name"], args["name"],
+        db_operations.insert_post(args["charity_name"], args["name"],
                                       args["address"], args["phone_number"],
                                       args["description"])
         message = {'message': 'Success!'}

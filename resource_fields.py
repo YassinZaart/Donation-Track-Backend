@@ -27,7 +27,7 @@ donation_resource_fields = {
 }
 
 post_resource_fields = {
-    'name': fields.String,
+    'user_name': fields.String,
     'address': fields.String,
     'phoneNumber': fields.String,
     'description': fields.String,

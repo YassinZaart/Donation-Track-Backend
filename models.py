@@ -41,3 +41,4 @@ class PostModel(db.Model):
     phoneNumber = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
     time_created = db.Column(db.DateTime, default=func.now(), primary_key=True)
+
