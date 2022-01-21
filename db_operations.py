@@ -67,7 +67,7 @@ def get_donations_by_donee(id: str) -> List[models.DoneeModel]:
 
 def insert_donation(donee_id: str, user_name: str, type: str,
                     value: str) -> states.DonationInsertionState:
-    donation = models.DonationModel.query.filter_by(user_name=user_name).first()
+    donation = models.UserModel.query.filter_by(name=user_name).first()
     if donation is None:
         return states.DonationInsertionState.USER_DOESNT_EXIST
     donation = models.DonationModel(donee_id=donee_id, user_name=user_name, date=func.now(),
@@ -82,6 +82,11 @@ def insert_post(charity_name: str, name: str, location: str, phone_number: str, 
                             address=location, phoneNumber=phone_number, description=description)
     db.session.add(post)
     db.session.commit()
+
+
+def get_top_posts():
+    posts = models.PostModel.query.limit(5).all()
+    return posts
 
 
 def get_posts(charity_name: str):

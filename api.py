@@ -35,8 +35,6 @@ class SignUp(Resource):
             return message, 409
 
 
-
-
 class Login(Resource):
     def post(self):
         args = request.args
@@ -130,20 +128,24 @@ class Post(Resource):
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
         db_operations.insert_post(args["charity_name"], args["name"],
-                                      args["address"], args["phone_number"],
-                                      args["description"])
+                                  args["address"], args["phone_number"],
+                                  args["description"])
         message = {'message': 'Success!'}
         return message, 200
 
     @marshal_with(resource_fields.post_resource_fields)
     def get(self):
         args = request.args
-        try:
-            schemas.PostCharityNameSchema().load(args)
-        except ValidationError as err:
-            abort(message=err.messages, http_status_code=400)
-        posts = db_operations.get_posts(args["charity_name"])
-        return posts
+        if "charity_name" in args:
+            try:
+                schemas.PostCharityNameSchema().load(args)
+            except ValidationError as err:
+                abort(message=err.messages, http_status_code=400)
+            posts = db_operations.get_posts(args["charity_name"])
+            return posts
+        else:
+            posts = db_operations.get_top_posts()
+            return posts
 
 
 api.add_resource(User, "/users")
