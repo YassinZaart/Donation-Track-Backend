@@ -19,8 +19,8 @@ donee_resource_fields = {
 }
 
 donation_resource_fields = {
-    'id': fields.String,
-    'name': fields.String,
+    'donee_id': fields.String,
+    'user_name': fields.String,
     'date': fields.DateTime,
     'type': fields.String,
     'value': fields.Integer

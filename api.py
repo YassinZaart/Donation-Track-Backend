@@ -104,19 +104,21 @@ class Donation(Resource):
     @marshal_with(resource_fields.donation_resource_fields)
     def get(self):
         args = request.args
+        if "user_name" in args and "donee_id" in args:
+            abort(message="donee_id and user_name can't be in the same request", http_status_code=409)
+
         if "donee_id" in args:
             donations = db_operations.get_donations_by_donee(args["donee_id"])
-            if donations is None:
+            if not donations:
                 abort(message="Donation not found", http_status_code=404)
             return donations
 
         if "user_name" in args:
             donations = db_operations.get_donations_by_user(args["user_name"])
-            if donations is None:
+            if not donations:
                 abort(message="Donation not found", http_status_code=404)
             return donations
-        if "user_name" in args & "donee_id" in args:
-            abort(message="donee_id and user_name can't be in the same request", http_status_code=409)
+
         abort(message="donee_id or user_name arguments are missing", http_status_code=400)
 
 
@@ -136,6 +138,7 @@ class Post(Resource):
     @marshal_with(resource_fields.post_resource_fields)
     def get(self):
         args = request.args
+        print(args)
         if "charity_name" in args:
             try:
                 schemas.PostCharityNameSchema().load(args)
