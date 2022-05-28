@@ -1,6 +1,6 @@
 from typing import Optional, List
 
-from sqlalchemy import DateTime, func
+from sqlalchemy import desc, func
 
 from variables import db, bcrypt
 import states, models
@@ -51,17 +51,12 @@ def insert_donee(id: str, fname: str, lname: str, city: str, street: str,
 
 
 def get_donations_by_donee(id: str) -> List[models.DonationModel]:
-    donations = models.DonationModel.query.filter_by(id=id).all()
+    donations = models.DonationModel.all()
     return donations
 
 
 def get_donations_by_user(name: str) -> List[models.DonationModel]:
-    donations = models.DonationModel.query.filter_by(user_name=name).all()
-    return donations
-
-
-def get_donations_by_donee(id: str) -> List[models.DoneeModel]:
-    donations = models.DonationModel.query.filter_by(donee_id=id).all()
+    donations = models.DonationModel.query.order_by(desc(models.DonationModel.date)).all()
     return donations
 
 
@@ -85,10 +80,10 @@ def insert_post(charity_name: str, name: str, location: str, phone_number: str, 
 
 
 def get_top_posts():
-    posts = models.PostModel.query.limit(5).all()
+    posts = models.PostModel.query.order_by(desc(models.PostModel.date)).all()
     return posts
 
 
 def get_posts(charity_name: str):
-    posts = models.PostModel.query.filter_by(charity_name=charity_name).all()
+    posts = models.PostModel.query.filter_by(charity_name=charity_name).order_by(desc(models.PostModel.date)).all()
     return posts
