@@ -80,10 +80,10 @@ def insert_post(charity_name: str, name: str, location: str, phone_number: str, 
 
 
 def get_top_posts():
-    posts = models.PostModel.query.order_by(desc(models.PostModel.date)).all()
+    posts = models.PostModel.query.order_by(desc(models.PostModel.time_created)).all()
     return posts
 
 
 def get_posts(charity_name: str):
-    posts = models.PostModel.query.filter_by(charity_name=charity_name).order_by(desc(models.PostModel.date)).all()
+    posts = models.PostModel.query.filter_by(charity_name=charity_name).order_by(desc(models.PostModel.time_created)).all()
     return posts
