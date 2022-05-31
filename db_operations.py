@@ -33,18 +33,23 @@ def get_user(email: str) -> Optional[models.UserModel]:
     return user
 
 
+def get_donations(user_name: str) -> List[models.DonationModel]:
+    donations = models.DonationModel.query.filter_by(user_name=user_name).order_by(desc(models.DonationModel.date)).all()
+    return donations
+
+
 def get_donations() -> List[models.DonationModel]:
     donations = models.DonationModel.query.order_by(desc(models.DonationModel.date)).all()
     return donations
 
 
-def insert_donation(donee_id: str, user_name: str, type: str,
+def insert_donation(donee_id: str, user_name: str, name: str, description: str,
                     value: str) -> states.DonationInsertionState:
     donation = models.UserModel.query.filter_by(name=user_name).first()
     if donation is None:
         return states.DonationInsertionState.USER_DOESNT_EXIST
-    donation = models.DonationModel(donee_id=donee_id, user_name=user_name, date=func.now(),
-                                    type=type, value=value)
+    donation = models.DonationModel(donee_id=donee_id, user_name=user_name, name=name, date=func.now(),
+                                    description=description, value=value)
     db.session.add(donation)
     db.session.commit()
     return states.DonationInsertionState.INSERTION_SUCCESSFUL

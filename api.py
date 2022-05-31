@@ -1,8 +1,10 @@
 from flask_restful import Resource, request, marshal_with, abort
 from marshmallow import ValidationError
 
-from variables import api
+from variables import api, db
 import db_operations, schemas, states, resource_fields
+
+db.create_all()
 
 
 class User(Resource):
@@ -27,9 +29,8 @@ class SignUp(Resource):
             schemas.SignUpInfoSchema().load(args)
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
-        state = db_operations.signup(args["email"], args["name"],
-                                     args["password"], args["city"],
-                                     args["street"], args["phone_number"])
+        state = db_operations.signup(args["email"], args["user_name"],
+                                     args["password"])
         if state == states.SignupState.EMAIL_ALREADY_EXIST:
             message = {'message': 'User already exist'}
             return message, 409
@@ -54,34 +55,6 @@ class Login(Resource):
         return message, 200
 
 
-class Donee(Resource):
-    def post(self):
-        args = request.args
-        try:
-            schemas.DoneeSchema().load(args)
-        except ValidationError as err:
-            return err.messages, 409
-        state = db_operations.insert_donee(args["id"], args["first_name"], args["last_name"],
-                                           args["city"], args["street"], args["phone_number"])
-        if state == states.DoneeInsertionState.DONEE_EXISTS:
-            message = {'message': 'Donee already exist'}
-            return message, 409
-        message = {'message': 'Success!'}
-        return message, 200
-
-    @marshal_with(resource_fields.donee_resource_fields)
-    def get(self):
-        args = request.args
-        try:
-            schemas.DoneeIDSchema().load(args)
-        except ValidationError as err:
-            abort(message=err.messages, http_status_code=400)
-        donee = db_operations.get_donee(args["id"])
-        if donee is None:
-            abort(message="Invalid ID", http_status_code=404)
-        return donee
-
-
 class Donation(Resource):
     def post(self):
         args = request.args
@@ -89,8 +62,8 @@ class Donation(Resource):
             schemas.DonationSchema().load(args)
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
-        state = db_operations.insert_donation(args["donee_id"], args["user_name"],
-                                              args["type"],
+        state = db_operations.insert_donation(args["id"], args["user_name"], args["name"],
+                                              args["description"],
                                               args["value"])
         if state == states.DonationInsertionState.USER_DOESNT_EXIST:
             message = {'message': 'Invalid User'}
@@ -104,22 +77,18 @@ class Donation(Resource):
     @marshal_with(resource_fields.donation_resource_fields)
     def get(self):
         args = request.args
-        if "user_name" in args and "donee_id" in args:
-            abort(message="donee_id and user_name can't be in the same request", http_status_code=409)
-
-        if "donee_id" in args:
-            donations = db_operations.get_donations_by_donee(args["donee_id"])
-            if not donations:
-                abort(message="Donation not found", http_status_code=404)
-            return donations
 
         if "user_name" in args:
-            donations = db_operations.get_donations_by_user(args["user_name"])
+            donations = db_operations.get_donations(args["user_name"])
             if not donations:
                 abort(message="Donation not found", http_status_code=404)
             return donations
 
-        abort(message="donee_id or user_name arguments are missing", http_status_code=400)
+        else:
+            donations = db_operations.get_donations()
+            if not donations:
+                abort(message="Donation not found", http_status_code=404)
+            return donations
 
 
 class Post(Resource):
@@ -131,7 +100,7 @@ class Post(Resource):
             abort(message=err.messages, http_status_code=400)
         db_operations.insert_post(args["charity_name"], args["name"],
                                   args["address"], args["phone_number"],
-                                  args["description"])
+                                  args["description"], args["value"])
         message = {'message': 'Success!'}
         return message, 200
 
@@ -153,7 +122,6 @@ class Post(Resource):
 
 api.add_resource(User, "/users")
 api.add_resource(Login, "/login")
-api.add_resource(Donee, "/donees")
 api.add_resource(Donation, "/donations")
 api.add_resource(SignUp, "/signup")
 api.add_resource(Post, "/posts")

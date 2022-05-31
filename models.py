@@ -17,8 +17,9 @@ class UserModel(db.Model):
 
 class DonationModel(db.Model):
     __tablename__ = 'donations'
-    id = db.Column(db.Integer, primaryKey=True, autoincrement=True)
-    user_name = db.Column(db.String(30), ForeignKey('users.name'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_name = db.Column(db.String(30), ForeignKey('users.name'))
+    name = db.Column(db.String(30), nullable=False)
     date = db.Column(db.DateTime, default=func.now())
     description = db.Column(db.String(500), nullable=False)
     value = db.Column(db.Integer, nullable=False)
@@ -26,7 +27,7 @@ class DonationModel(db.Model):
 
 class PostModel(db.Model):
     __tablename__ = 'posts'
-    id = db.Column(db.Integer, primaryKey=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     charity_name = db.Column(db.String(30), ForeignKey('users.name'), nullable=False)
     name = db.Column(db.String(30), nullable=False)
     address = db.Column(db.String(30), nullable=False)
@@ -39,5 +40,5 @@ class PostModel(db.Model):
 class PostContributionModel(db.Model):
     __tablename__ = 'post_contributions'
     email = db.Column(db.String(30), ForeignKey('users.name'), nullable=False)
-    post_id = db.Column(db.Integer, ForeignKey('posts.id'), primaryKey=True, autoincrement=True)
+    post_id = db.Column(db.Integer, ForeignKey('posts.id'), primary_key=True, autoincrement=True)
     value = db.Column(db.Integer, nullable=False, default=0)
