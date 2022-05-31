@@ -9,7 +9,7 @@ class UserModel(db.Model):
     name = db.Column(db.String(30), nullable=False, unique=True)
     phone_number = db.Column(db.String(10), nullable=False, default="N/A")
     address = db.Column(db.String(50), nullable=False, default="N/A")
-    password = db.Column(db.String(50), nullable=False, default="N/A")
+    password = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(500), nullable=False, default="N/A")
     is_verified = db.Column(db.Boolean, nullable=False, default=False)
     is_admin = db.Column(db.Boolean, nullable=False, default=False)
@@ -30,7 +30,7 @@ class PostModel(db.Model):
     charity_name = db.Column(db.String(30), ForeignKey('users.name'), nullable=False)
     name = db.Column(db.String(30), nullable=False)
     address = db.Column(db.String(30), nullable=False)
-    phoneNumber = db.Column(db.String(30), nullable=False)
+    phone_number = db.Column(db.String(30), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
     value = db.Column(db.Integer, nullable=False, default=0)
     time_created = db.Column(db.DateTime, default=func.now())
@@ -38,6 +38,6 @@ class PostModel(db.Model):
 
 class PostContributionModel(db.Model):
     __tablename__ = 'post_contributions'
-    charity_name = db.Column(db.String(30), ForeignKey('users.name'), nullable=False)
+    email = db.Column(db.String(30), ForeignKey('users.name'), nullable=False)
     post_id = db.Column(db.Integer, ForeignKey('posts.id'), primaryKey=True, autoincrement=True)
-    value = db.Column(db.Integer,nullable=False, default=0)
+    value = db.Column(db.Integer, nullable=False, default=0)
