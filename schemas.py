@@ -57,5 +57,11 @@ class PostUpdateSchema(PostSchema):
     post_id = fields.Integer(required=True, error_messages={"required": "Post ID is required"})
 
 
-class PostDeleteSchema(Schema):
+class PostIDSchema(Schema):
     post_id = fields.Integer(required=True, error_messages={"required": "Post ID is required"})
+
+
+class PostContribution(Schema):
+    post_id = fields.Integer(required=True, error_messages={"required": "Post ID is required"})
+    user_name = fields.String(required=True, error_messages={"required": "Username is required"})
+    value = fields.Integer(required=True, error_messages={"required": "Value ID is required"})

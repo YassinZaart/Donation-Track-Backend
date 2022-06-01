@@ -17,7 +17,8 @@ class UserModel(db.Model):
 
 class DonationModel(db.Model):
     __tablename__ = 'donations'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    donation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    donee_id = db.Column(db.String(30), nullable=False)
     user_name = db.Column(db.String(30), ForeignKey('users.name'))
     name = db.Column(db.String(30), nullable=False)
     date = db.Column(db.DateTime, default=func.now())
@@ -39,6 +40,7 @@ class PostModel(db.Model):
 
 class PostContributionModel(db.Model):
     __tablename__ = 'post_contributions'
-    email = db.Column(db.String(30), ForeignKey('users.name'), nullable=False)
-    post_id = db.Column(db.Integer, ForeignKey('posts.id'), primary_key=True, autoincrement=True)
+    username = db.Column(db.String(30), ForeignKey('users.name'), primary_key=True)
+    post_id = db.Column(db.Integer, ForeignKey('posts.id'), primary_key=True)
     value = db.Column(db.Integer, nullable=False, default=0)
+

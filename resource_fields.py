@@ -21,11 +21,20 @@ donation_resource_fields = {
 }
 
 post_resource_fields = {
-    'post_id': fields.Integer,
-    'user_name': fields.String,
+    'id': fields.Integer,
+    'charity_name': fields.String,
+    'name': fields.String,
     'address': fields.String,
-    'phoneNumber': fields.String,
+    'phone_number': fields.String,
     'description': fields.String,
     'time_created': fields.DateTime,
     'value': fields.Integer
 }
+
+post_contributions_resource_fields = {
+    'username': fields.String,
+    'post_id': fields.Integer,
+    'value': fields.Integer
+}
+
+

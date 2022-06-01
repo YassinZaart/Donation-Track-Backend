@@ -122,10 +122,10 @@ def get_posts_by_username(username: str):
     return posts
 
 
-def put_contribution(email: str, post_id: str, value: int):
-    contribution = models.PostContributionModel.query.get((email, post_id))
+def put_contribution(username: str, post_id: str, value: int):
+    contribution = models.PostContributionModel.query.get((username, post_id))
     if contribution is None:
-        contribution = models.PostContributionModel(email=email, post_id=post_id, value=value)
+        contribution = models.PostContributionModel(username=username, post_id=post_id, value=value)
         db.session.add(contribution)
         db.session.commit()
     else:
@@ -134,5 +134,12 @@ def put_contribution(email: str, post_id: str, value: int):
 
 
 def get_contributions(post_id: str):
-    contributions = models.PostContributionModel.query.get(post_id).all
+    contributions = models.PostContributionModel.query.filter_by(post_id=post_id).all()
     return contributions
+
+
+def get_contributions_sum(post_id: str):
+    contributions = db.session.query(func.sum(models.PostContributionModel.value))\
+        .filter_by(post_id=post_id)
+    sum = contributions.scalar()
+    return sum

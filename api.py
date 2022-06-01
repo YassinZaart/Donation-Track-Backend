@@ -145,7 +145,7 @@ class Post(Resource):
     def delete(self):
         args = request.args
         try:
-            schemas.PostDeleteSchema().load(args)
+            schemas.PostIDSchema().load(args)
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
         state = db_operations.delete_post(args["post_id"]);
@@ -153,7 +153,6 @@ class Post(Resource):
             abort(message="Post does not exist", http_status_code=404)
         message = {'message': 'Success!'}
         return message, 200
-
 
     @marshal_with(resource_fields.post_resource_fields)
     def get(self):
@@ -172,8 +171,49 @@ class Post(Resource):
             return posts
 
 
+class PostContributions(Resource):
+    def put(self):
+        args = request.args
+        try:
+            schemas.PostContribution().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        db_operations.put_contribution(args["user_name"], args["post_id"],
+                                  args["value"])
+        message = {'message': 'Success!'}
+        return message, 200
+
+    @marshal_with(resource_fields.post_contributions_resource_fields)
+    def get(self):
+        args = request.args
+        try:
+            schemas.PostIDSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        post_contribution = db_operations.get_contributions(args["post_id"])
+        if not post_contribution:
+            abort(message="Post not found", http_status_code=404)
+        return post_contribution
+
+
+class PostContributionsSum(Resource):
+    def get(self):
+        args = request.args
+        try:
+            schemas.PostIDSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        post_contribution = db_operations.get_contributions_sum(args["post_id"])
+        if not post_contribution:
+            abort(message="Post not found", http_status_code=404)
+        result = {'sum': post_contribution}
+        return result
+
+
 api.add_resource(User, "/users")
 api.add_resource(Login, "/login")
 api.add_resource(Donation, "/donations")
 api.add_resource(SignUp, "/signup")
 api.add_resource(Post, "/posts")
+api.add_resource(PostContributions, "/posts/contributions")
+api.add_resource(PostContributionsSum, "/posts/contributions/sums")
