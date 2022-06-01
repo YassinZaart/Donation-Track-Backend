@@ -32,6 +32,9 @@ class SignUp(Resource):
         if state == states.SignupState.EMAIL_ALREADY_EXIST:
             message = {'message': 'User already exist'}
             return message, 409
+        else:
+            message = {'message': 'Success'}
+            return 200
 
 
 class Login(Resource):
@@ -65,9 +68,6 @@ class Donation(Resource):
                                               args["value"])
         if state == states.DonationInsertionState.USER_DOESNT_EXIST:
             message = {'message': 'Invalid User'}
-            return message, 404
-        if state == states.DonationInsertionState.DONEE_DOESNT_EXIST:
-            message = {'message': 'Invalid Donee'}
             return message, 404
         message = {'message': 'Success!'}
         return message, 200

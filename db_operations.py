@@ -45,9 +45,6 @@ def get_donations() -> List[models.DonationModel]:
 
 def insert_donation(donee_id: str, user_name: str, name: str, description: str,
                     value: str) -> states.DonationInsertionState:
-    donation = models.UserModel.query.filter_by(name=user_name).first()
-    if donation is None:
-        return states.DonationInsertionState.USER_DOESNT_EXIST
     donation = models.DonationModel(donee_id=donee_id, user_name=user_name, name=name, date=func.now(),
                                     description=description, value=value)
     db.session.add(donation)
