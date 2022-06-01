@@ -55,6 +55,31 @@ def insert_donation(donee_id: str, user_name: str, name: str, description: str,
     return states.DonationInsertionState.INSERTION_SUCCESSFUL
 
 
+def update_donation(donation_id: str, donee_id: str, user_name: str, name: str, description: str,
+                    value: int):
+    donation = models.DonationModel.query.filter_by(donation_id=donation_id).first()
+    if not donation:
+        return states.PostState.DOESNT_EXIST
+    else:
+        donation.donee_id = donee_id
+        donation.user_name = user_name
+        donation.name = name
+        donation.description = description
+        donation.value = value
+    db.session.commit()
+    return states.PostState.SUCCESSFUL
+
+
+def delete_donation(donation_id):
+    donation = models.DonationModel.query.filter_by(donation_id=donation_id).first()
+    if not donation:
+        return states.PostState.DOESNT_EXIST
+    else:
+        db.session.delete(donation)
+        db.session.commit()
+    return states.PostState.SUCCESSFUL
+
+
 def insert_post(charity_name: str, name: str, location: str, phone_number: str, description: str, value: int):
     post = models.PostModel(charity_name=charity_name, name=name,
                             address=location, phone_number=phone_number, description=description, value=value)
@@ -75,7 +100,6 @@ def update_post(post_id, charity_name: str, name: str, location: str, phone_numb
         post.value = value
     db.session.commit()
     return states.PostState.SUCCESSFUL
-
 
 
 def delete_post(post_id):
@@ -107,3 +131,8 @@ def put_contribution(email: str, post_id: str, value: int):
     else:
         contribution.value = value
         db.session.commit()
+
+
+def get_contributions(post_id: str):
+    contributions = models.PostContributionModel.query.get(post_id).all
+    return contributions

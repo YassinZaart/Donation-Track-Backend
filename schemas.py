@@ -33,6 +33,14 @@ class DonationSchema(Schema):
     value = fields.Int(required=True, error_messages={"required": "Value is required"})
 
 
+class DonationUpdateSchema(DonationSchema):
+    donation_id = fields.Str(required=True, error_messages={"required": "Donation ID is required"})
+
+
+class DonationDeleteSchema(Schema):
+    donation_id = fields.Str(required=True, error_messages={"required": "Donation ID is required"})
+
+
 class PostCharityNameSchema(Schema):
     charity_name = fields.Str(required=True, error_messages={"required": "Charity name is required"})
 

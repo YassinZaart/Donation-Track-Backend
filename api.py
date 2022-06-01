@@ -72,6 +72,32 @@ class Donation(Resource):
         message = {'message': 'Success!'}
         return message, 200
 
+    def patch(self):
+        args = request.args
+        try:
+            schemas.DonationUpdateSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        state = db_operations.update_donation(args["donation_id"], args["id"], args["user_name"], args["name"],
+                                              args["description"],
+                                              args["value"])
+        if state == states.PostState.DOESNT_EXIST:
+            abort(message="Donation does not exist", http_status_code=404)
+        message = {'message': 'Success!'}
+        return message, 200
+
+    def delete(self):
+        args = request.args
+        try:
+            schemas.DonationDeleteSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        state = db_operations.delete_donation(args["donation_id"]);
+        if state == states.PostState.DOESNT_EXIST:
+            abort(message="Donation does not exist", http_status_code=404)
+        message = {'message': 'Success!'}
+        return message, 200
+
     @marshal_with(resource_fields.donation_resource_fields)
     def get(self):
         args = request.args
