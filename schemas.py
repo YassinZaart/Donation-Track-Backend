@@ -19,8 +19,8 @@ class UserInfoSchema(UserEmailSchema):
     name = fields.Str(required=True, error_messages={"required": "Name is required"})
 
 
-class SignUpInfoSchema():
-    user_name = fields.Str(required=True, error_messages={"required": "user_ame is required"})
+class SignUpInfoSchema(Schema):
+    user_name = fields.Str(required=True, error_messages={"required": "user_name is required"})
     email = fields.Str(required=True, error_messages={"required": "email is required"})
     password = fields.Str(required=True, error_messages={"required": "Password is required"})
 
@@ -43,3 +43,11 @@ class PostSchema(PostCharityNameSchema):
     phone_number = fields.Str(required=True, error_messages={"required": "Phone number is required"})
     description = fields.Str(required=True, error_messages={"required": "Description is required"})
     value = fields.Int(required=True, error_messages={"required": "Value is required"})
+
+
+class PostUpdateSchema(PostSchema):
+    post_id = fields.Integer(required=True, error_messages={"required": "Post ID is required"})
+
+
+class PostDeleteSchema(Schema):
+    post_id = fields.Integer(required=True, error_messages={"required": "Post ID is required"})

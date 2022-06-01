@@ -4,8 +4,6 @@ from marshmallow import ValidationError
 from variables import api, db
 import db_operations, schemas, states, resource_fields
 
-db.create_all()
-
 
 class User(Resource):
     @marshal_with(resource_fields.user_resource_fields)
@@ -79,7 +77,7 @@ class Donation(Resource):
         args = request.args
 
         if "user_name" in args:
-            donations = db_operations.get_donations(args["user_name"])
+            donations = db_operations.get_donations_by_username(args["user_name"])
             if not donations:
                 abort(message="Donation not found", http_status_code=404)
             return donations
@@ -104,19 +102,47 @@ class Post(Resource):
         message = {'message': 'Success!'}
         return message, 200
 
+    def patch(self):
+        args = request.args
+        try:
+            schemas.PostUpdateSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        state = db_operations.update_post(args["post_id"], args["charity_name"], args["name"],
+                                          args["address"], args["phone_number"],
+                                          args["description"], args["value"])
+        if state == states.PostState.DOESNT_EXIST:
+            abort(message="Post does not exist", http_status_code=404)
+        message = {'message': 'Success!'}
+        return message, 200
+
+    def delete(self):
+        args = request.args
+        try:
+            schemas.PostDeleteSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        state = db_operations.delete_post(args["post_id"]);
+        if state == states.PostState.DOESNT_EXIST:
+            abort(message="Post does not exist", http_status_code=404)
+        message = {'message': 'Success!'}
+        return message, 200
+
+
     @marshal_with(resource_fields.post_resource_fields)
     def get(self):
         args = request.args
-        print(args)
         if "charity_name" in args:
             try:
                 schemas.PostCharityNameSchema().load(args)
             except ValidationError as err:
                 abort(message=err.messages, http_status_code=400)
-            posts = db_operations.get_posts(args["charity_name"])
+            posts = db_operations.get_posts_by_username(args["charity_name"])
             return posts
         else:
-            posts = db_operations.get_top_posts()
+            posts = db_operations.get_posts()
+            if posts is None:
+                abort(message="No Posts", http_status_code=404)
             return posts
 
 

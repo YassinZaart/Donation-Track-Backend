@@ -16,8 +16,7 @@ def login(email: str, password: str) -> states.LoginState:
         return states.LoginState.INCORRECT_PASSWORD
 
 
-def signup(email: str, name: str, password: str, address: str, phone_number: str,
-           description: str) -> states.SignupState:
+def signup(email: str, name: str, password: str) -> states.SignupState:
     user = models.UserModel.query.get(email)
     pw_hash = bcrypt.generate_password_hash(password).decode('utf-8')
     if user is not None:
@@ -33,8 +32,9 @@ def get_user(email: str) -> Optional[models.UserModel]:
     return user
 
 
-def get_donations(user_name: str) -> List[models.DonationModel]:
-    donations = models.DonationModel.query.filter_by(user_name=user_name).order_by(desc(models.DonationModel.date)).all()
+def get_donations_by_username(user_name: str) -> List[models.DonationModel]:
+    donations = models.DonationModel.query.filter_by(user_name=user_name).order_by(
+        desc(models.DonationModel.date)).all()
     return donations
 
 
@@ -56,10 +56,36 @@ def insert_donation(donee_id: str, user_name: str, name: str, description: str,
 
 
 def insert_post(charity_name: str, name: str, location: str, phone_number: str, description: str, value: int):
-    post = models.PostModel(charity_name=charity_name, user_name=name,
+    post = models.PostModel(charity_name=charity_name, name=name,
                             address=location, phone_number=phone_number, description=description, value=value)
     db.session.add(post)
     db.session.commit()
+
+
+def update_post(post_id, charity_name: str, name: str, location: str, phone_number: str, description: str, value: int):
+    post = models.PostModel.query.filter_by(id=post_id).first()
+    if not post:
+        return states.PostState.DOESNT_EXIST
+    else:
+        post.charity_name = charity_name
+        post.name = name
+        post.address = location
+        post.phone_number = phone_number
+        post.description = description
+        post.value = value
+    db.session.commit()
+    return states.PostState.SUCCESSFUL
+
+
+
+def delete_post(post_id):
+    post = models.PostModel.query.filter_by(id=post_id).first()
+    if not post:
+        return states.PostState.DOESNT_EXIST
+    else:
+        db.session.delete(post)
+        db.session.commit()
+    return states.PostState.SUCCESSFUL
 
 
 def get_posts():
@@ -67,8 +93,8 @@ def get_posts():
     return posts
 
 
-def get_posts(email: str):
-    posts = models.PostModel.query.filter_by(email=email).order_by(desc(models.PostModel.time_created)).all()
+def get_posts_by_username(username: str):
+    posts = models.PostModel.query.filter_by(charity_name=username).order_by(desc(models.PostModel.time_created)).all()
     return posts
 
 

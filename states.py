@@ -18,6 +18,11 @@ class DoneeInsertionState(Enum):
     INSERTION_SUCCESSFUL = auto()
 
 
+class PostState(Enum):
+    DOESNT_EXIST = auto()
+    SUCCESSFUL = auto()
+
+
 class DonationInsertionState(Enum):
     USER_DOESNT_EXIST = auto()
     DONEE_DOESNT_EXIST = auto()
