@@ -29,7 +29,7 @@ class DonationSchema(Schema):
     user_name = fields.Str(required=True, error_messages={"required": "User name is required"})
     name = fields.Str(required=True, error_messages={"required": "name is required"})
     id = fields.Str(required=True, error_messages={"required": "ID is required"})
-    description = fields.Str(description=True, error_messages={"required": "Description is required"})
+    description = fields.Str(required=True, error_messages={"required": "Description is required"})
     value = fields.Int(required=True, error_messages={"required": "Value is required"})
 
 
