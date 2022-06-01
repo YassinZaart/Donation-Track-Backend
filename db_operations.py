@@ -128,6 +128,10 @@ def put_contribution(username: str, post_id: str, value: int):
     else:
         contribution.value = value
         db.session.commit()
+    post = models.PostModel.query.get(post_id)
+    sum = get_contributions_sum(post_id)
+    post.contributions = sum
+    db.session.commit()
 
 
 def get_contributions(post_id: str):

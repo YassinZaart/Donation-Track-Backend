@@ -36,6 +36,7 @@ class PostModel(db.Model):
     description = db.Column(db.String(1000), nullable=False)
     value = db.Column(db.Integer, nullable=False, default=0)
     time_created = db.Column(db.DateTime, default=func.now())
+    contributions = db.Column(db.Integer, nullable=False, default=0)
 
 
 class PostContributionModel(db.Model):
@@ -43,4 +44,3 @@ class PostContributionModel(db.Model):
     username = db.Column(db.String(30), ForeignKey('users.name'), primary_key=True)
     post_id = db.Column(db.Integer, ForeignKey('posts.id'), primary_key=True)
     value = db.Column(db.Integer, nullable=False, default=0)
-

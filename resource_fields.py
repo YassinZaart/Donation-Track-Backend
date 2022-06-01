@@ -28,7 +28,8 @@ post_resource_fields = {
     'phone_number': fields.String,
     'description': fields.String,
     'time_created': fields.DateTime,
-    'value': fields.Integer
+    'value': fields.Integer,
+    'contributions': fields.Integer
 }
 
 post_contributions_resource_fields = {
