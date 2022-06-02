@@ -107,7 +107,7 @@ class Donation(Resource):
             if not donations:
                 abort(message="Donation not found", http_status_code=404)
             return donations
-        elif "id" in args:
+        elif "donation_id" in args:
             donation = db_operations.get_donation_by_id(args["id"])
             return donation
         else:
