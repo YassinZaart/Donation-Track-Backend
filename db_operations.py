@@ -38,6 +38,11 @@ def get_donations_by_username(user_name: str) -> List[models.DonationModel]:
     return donations
 
 
+def get_donation_by_id(id: str) -> models.DonationModel:
+    donation = models.DonationModel.query.get(id)
+    return donation
+
+
 def get_donations() -> List[models.DonationModel]:
     donations = models.DonationModel.query.order_by(desc(models.DonationModel.date)).all()
     return donations
@@ -114,6 +119,11 @@ def get_posts():
     return posts
 
 
+def get_post_by_id(id: str):
+    posts = models.PostModel.query.get(id)
+    return posts
+
+
 def get_posts_by_username(username: str):
     posts = models.PostModel.query.filter_by(charity_name=username).order_by(desc(models.PostModel.time_created)).all()
     return posts
@@ -140,7 +150,7 @@ def get_contributions(post_id: str):
 
 
 def get_contributions_sum(post_id: str):
-    contributions = db.session.query(func.sum(models.PostContributionModel.value))\
+    contributions = db.session.query(func.sum(models.PostContributionModel.value)) \
         .filter_by(post_id=post_id)
     sum = contributions.scalar()
     return sum

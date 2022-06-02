@@ -107,7 +107,8 @@ class Donation(Resource):
             if not donations:
                 abort(message="Donation not found", http_status_code=404)
             return donations
-
+        elif "id" in args:
+            donations = db_operations.get_donation_by_id(args["id"])
         else:
             donations = db_operations.get_donations()
             if not donations:
@@ -163,6 +164,9 @@ class Post(Resource):
             except ValidationError as err:
                 abort(message=err.messages, http_status_code=400)
             posts = db_operations.get_posts_by_username(args["charity_name"])
+            return posts
+        elif "post_id" in args:
+            posts = db_operations.get_post_by_id(args["post_id"])
             return posts
         else:
             posts = db_operations.get_posts()
