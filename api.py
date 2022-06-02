@@ -34,7 +34,7 @@ class SignUp(Resource):
             return message, 409
         else:
             message = {'message': 'Success'}
-            return 200
+            return message, 200
 
 
 class Login(Resource):
@@ -108,7 +108,8 @@ class Donation(Resource):
                 abort(message="Donation not found", http_status_code=404)
             return donations
         elif "id" in args:
-            donations = db_operations.get_donation_by_id(args["id"])
+            donation = db_operations.get_donation_by_id(args["id"])
+            return donation
         else:
             donations = db_operations.get_donations()
             if not donations:
