@@ -38,13 +38,18 @@ def get_donations_by_username(user_name: str) -> List[models.DonationModel]:
     return donations
 
 
+def get_donations() -> List[models.DonationModel]:
+    donations = models.DonationModel.query.order_by(desc(models.DonationModel.date)).all()
+    return donations
+
+
 def get_donation_by_id(id: str) -> models.DonationModel:
     donation = models.DonationModel.query.get(id)
     return donation
 
 
-def get_donations() -> List[models.DonationModel]:
-    donations = models.DonationModel.query.order_by(desc(models.DonationModel.date)).all()
+def get_donations_by_donee_id(id) -> List[models.DonationModel]:
+    donations = models.DonationModel.query.filter_by(donee_id=id).order_by(desc(models.DonationModel.date)).all()
     return donations
 
 

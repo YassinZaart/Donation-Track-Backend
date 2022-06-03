@@ -110,6 +110,10 @@ class Donation(Resource):
         elif "donation_id" in args:
             donation = db_operations.get_donation_by_id(args["donation_id"])
             return donation
+
+        elif "donee_id" in args:
+            donation = db_operations.get_donations_by_donee_id(args["donee_id"])
+            return donation
         else:
             donations = db_operations.get_donations()
             if not donations:
