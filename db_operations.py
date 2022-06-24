@@ -189,6 +189,7 @@ def accept_request(request_id):
     user.address = request.address
     user.description = request.description
     user.is_verified = True
+    db.session.delete(request)
     db.session.commit()
 
 
