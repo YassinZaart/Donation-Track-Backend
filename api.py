@@ -18,6 +18,13 @@ class User(Resource):
             abort(message="User not found", http_status_code=404)
         return user
 
+    def patch(self):
+        args = request.args
+        if "accept_request_id" in args:
+            db_operations.accept_request(request)
+        if "reject_request_id" in args:
+            db_operations.accept_request(request)
+
 
 class SignUp(Resource):
 
@@ -105,7 +112,7 @@ class Donation(Resource):
         if "user_name" in args:
             donations = db_operations.get_donations_by_username(args["user_name"])
             if not donations:
-                abort(message="Donation not found", http_status_code=404)
+                abort(message="User does not have any donations", http_status_code=404)
             return donations
         elif "donation_id" in args:
             donation = db_operations.get_donation_by_id(args["donation_id"])
@@ -188,7 +195,7 @@ class PostContributions(Resource):
         except ValidationError as err:
             abort(message=err.messages, http_status_code=400)
         db_operations.put_contribution(args["user_name"], args["post_id"],
-                                  args["value"])
+                                       args["value"])
         message = {'message': 'Success!'}
         return message, 200
 
@@ -206,6 +213,7 @@ class PostContributions(Resource):
 
 
 class PostContributionsSum(Resource):
+
     def get(self):
         args = request.args
         try:
@@ -219,7 +227,30 @@ class PostContributionsSum(Resource):
         return result
 
 
+class Requests(Resource):
+    @marshal_with(resource_fields.request_resource_fields)
+    def get(self):
+        requests = db_operations.get_requests()
+        if not requests:
+            abort(message="no requsts", http_status_code=400)
+        else:
+            return requests
+
+    def put(self):
+        args = request.args
+        print(args)
+        try:
+            schemas.RequestSchema().load(args)
+        except ValidationError as err:
+            abort(message=err.messages, http_status_code=400)
+        db_operations.put_request(args["email"], args["name"], args["phone_number"], args["address"], args["type"],
+                                  args["description"])
+        message = {'message': 'Success!'}
+        return message, 200
+
+
 api.add_resource(User, "/users")
+api.add_resource(Requests, "/users/requests")
 api.add_resource(Login, "/login")
 api.add_resource(Donation, "/donations")
 api.add_resource(SignUp, "/signup")

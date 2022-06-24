@@ -38,4 +38,15 @@ post_contributions_resource_fields = {
     'value': fields.Integer
 }
 
+request_resource_fields = {
+    'id': fields.String,
+    'email': fields.String,
+    'type': fields.String,
+    'name': fields.String,
+    'phone_number': fields.String,
+    'address': fields.String,
+    'description': fields.String,
+    'date': fields.DateTime,
+}
+
 

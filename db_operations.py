@@ -159,3 +159,35 @@ def get_contributions_sum(post_id: str):
         .filter_by(post_id=post_id)
     sum = contributions.scalar()
     return sum
+
+
+def get_requests():
+    requests = models.RequestModel.query.order_by(desc(models.RequestModel.date)).all()
+    return requests
+
+
+def put_request(email: str, name: str, phone_number: str, address: str, type2: str, description: str):
+    request = models.RequestModel.query.filter_by(email=email).first()
+    if request is None:
+        request = models.RequestModel(email=email, name=name, type=type2, phone_number=phone_number, address=address, description=description)
+        db.session.add(request)
+        db.session.commit()
+    else:
+        request.name = name
+        request.phone_number = phone_number
+        request.address = address
+        request.description = description
+        request.type = type2
+        db.session.commit()
+
+
+def accept_request(request_id):
+    request = models.RequestModel.query.get(request_id)
+    user = models.UserModel.query().get(request.email)
+    user.phone_number = request.phone_number
+    user.address = request.address
+    user.description = request.description
+    user.is_verified = True
+    db.session.commit()
+
+

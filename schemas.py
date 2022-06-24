@@ -17,6 +17,11 @@ class UserInfoSchema(UserEmailSchema):
     phone_number = fields.Str(required=True, error_messages={"required": "Phone number is required"})
     address = fields.Str(required=True, error_messages={"required": "Address is required"})
     name = fields.Str(required=True, error_messages={"required": "Name is required"})
+    description = fields.Str(required=True, error_messages={"required": "Name is required"})
+
+
+class RequestSchema(UserInfoSchema):
+    type = fields.Str(required=True, error_messages={"required": "Type is required"})
 
 
 class SignUpInfoSchema(Schema):

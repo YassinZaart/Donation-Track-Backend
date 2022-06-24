@@ -44,3 +44,15 @@ class PostContributionModel(db.Model):
     username = db.Column(db.String(30), ForeignKey('users.name'), primary_key=True)
     post_id = db.Column(db.Integer, ForeignKey('posts.id'), primary_key=True)
     value = db.Column(db.Integer, nullable=False, default=0)
+
+
+class RequestModel(db.Model):
+    __tablename__ = 'requests'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(20), nullable=False)
+    type = db.Column(db.String(20), nullable=False, default="verify")
+    name = db.Column(db.String(30), nullable=False)
+    phone_number = db.Column(db.String(10), nullable=False)
+    address = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    date = db.Column(db.DateTime, default=func.now())

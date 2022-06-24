@@ -13,11 +13,6 @@ class SignupState(Enum):
     SIGNUP_SUCCESSFUL = auto()
 
 
-class DoneeInsertionState(Enum):
-    DONEE_EXISTS = auto()
-    INSERTION_SUCCESSFUL = auto()
-
-
 class PostState(Enum):
     DOESNT_EXIST = auto()
     SUCCESSFUL = auto()
