@@ -195,5 +195,6 @@ def accept_request(request_id):
 
 def reject_request(request_id):
     request = models.RequestModel.query.get(request_id)
+    print(request)
     db.session.delete(request)
     db.session.commit()

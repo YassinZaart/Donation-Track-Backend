@@ -23,7 +23,7 @@ class User(Resource):
         if "accept_request_id" in args:
             db_operations.accept_request(args["accept_request_id"])
         if "reject_request_id" in args:
-            db_operations.reject_request("reject_request_id")
+            db_operations.reject_request(args["reject_request_id"])
 
 
 class SignUp(Resource):
