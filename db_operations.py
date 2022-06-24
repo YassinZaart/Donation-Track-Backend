@@ -169,7 +169,8 @@ def get_requests():
 def put_request(email: str, name: str, phone_number: str, address: str, type2: str, description: str):
     request = models.RequestModel.query.filter_by(email=email).first()
     if request is None:
-        request = models.RequestModel(email=email, name=name, type=type2, phone_number=phone_number, address=address, description=description)
+        request = models.RequestModel(email=email, name=name, type=type2, phone_number=phone_number, address=address,
+                                      description=description)
         db.session.add(request)
         db.session.commit()
     else:
@@ -191,3 +192,7 @@ def accept_request(request_id):
     db.session.commit()
 
 
+def reject_request(request_id):
+    request = models.RequestModel.query.get(request_id)
+    db.session.delete(request)
+    db.session.commit()

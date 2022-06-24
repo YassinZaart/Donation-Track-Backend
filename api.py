@@ -21,9 +21,9 @@ class User(Resource):
     def patch(self):
         args = request.args
         if "accept_request_id" in args:
-            db_operations.accept_request(request)
+            db_operations.accept_request(args["accept_request_id"])
         if "reject_request_id" in args:
-            db_operations.accept_request(request)
+            db_operations.reject_request("reject_request_id")
 
 
 class SignUp(Resource):
