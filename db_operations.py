@@ -184,7 +184,7 @@ def put_request(email: str, name: str, phone_number: str, address: str, type2: s
 
 def accept_request(request_id):
     request = models.RequestModel.query.get(request_id)
-    user = models.UserModel.query().get(request.email)
+    user = models.UserModel.query.get(request.email)
     user.phone_number = request.phone_number
     user.address = request.address
     user.description = request.description
@@ -195,6 +195,5 @@ def accept_request(request_id):
 
 def reject_request(request_id):
     request = models.RequestModel.query.get(request_id)
-    print(request)
     db.session.delete(request)
     db.session.commit()
