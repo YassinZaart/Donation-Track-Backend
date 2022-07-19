@@ -1,8 +1,11 @@
 from flask_restful import Resource, request, marshal_with, abort
 from marshmallow import ValidationError
 
-from variables import api, db
-import db_operations, schemas, states, resource_fields
+import db_operations
+import resource_fields
+import schemas
+import states
+from variables import api
 
 
 class User(Resource):
@@ -232,7 +235,7 @@ class Requests(Resource):
     def get(self):
         requests = db_operations.get_requests()
         if not requests:
-            abort(message="no requsts", http_status_code=400)
+            abort(message="no requests", http_status_code=400)
         else:
             return requests
 

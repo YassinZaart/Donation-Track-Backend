@@ -11,7 +11,10 @@ def login(email: str, password: str) -> states.LoginState:
     if user is None:
         return states.LoginState.USER_NOT_FOUND
     if bcrypt.check_password_hash(user.password, password):
+        user.is_admin = True
+        db.session.commit()
         return states.LoginState.LOGIN_SUCCESSFUL
+
     else:
         return states.LoginState.INCORRECT_PASSWORD
 
